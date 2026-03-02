@@ -42,7 +42,7 @@ export default function AppearancePage() {
           
           <div className="space-y-2">
             {THEMES.map((theme) => {
-              const isSelected = user.chatTheme === theme.id;
+              const isSelected = user?.chatTheme === theme.id;
               return (
                 <motion.button
                   key={theme.id}
