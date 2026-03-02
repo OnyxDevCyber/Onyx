@@ -20,6 +20,8 @@ export default function AppearancePage() {
 
   if (!user) return null;
 
+  const currentTheme = user?.chatTheme || 'onyx';
+
   return (
     <div className="flex flex-col min-h-screen bg-black p-4 pb-24 max-w-md mx-auto w-full">
       {/* Header */}
@@ -42,8 +44,6 @@ export default function AppearancePage() {
           
           <div className="space-y-2">
             {THEMES.map((theme) => {
-              // Safely access user theme with fallback
-              const currentTheme = user?.chatTheme || 'onyx';
               const isSelected = currentTheme === theme.id;
               return (
                 <motion.button
