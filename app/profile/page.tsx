@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { motion, AnimatePresence } from 'motion/react';
-import { UserCircle, Edit2, Check, X, Camera, Palette, ChevronRight } from 'lucide-react';
+import { UserCircle, Edit2, Check, X, Camera, Palette, ChevronRight, Info } from 'lucide-react';
 import { useUser } from '@/context/user-context';
 import { clsx } from 'clsx';
 
@@ -159,6 +159,16 @@ export default function ProfilePage() {
                     <Palette size={18} />
                   </div>
                   <span className="text-sm font-medium text-white">Appearance</span>
+                </div>
+                <ChevronRight size={16} className="text-zinc-500" />
+              </Link>
+
+              <Link href="/profile/about" className="flex items-center justify-between p-4 rounded-xl bg-zinc-900/50 border border-white/5 hover:bg-zinc-900 transition-colors group">
+                <div className="flex items-center gap-3">
+                  <div className="p-2 rounded-full bg-zinc-800 text-white group-hover:bg-white group-hover:text-black transition-colors">
+                    <Info size={18} />
+                  </div>
+                  <span className="text-sm font-medium text-white">About App</span>
                 </div>
                 <ChevronRight size={16} className="text-zinc-500" />
               </Link>
