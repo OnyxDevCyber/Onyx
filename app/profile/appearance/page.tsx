@@ -42,7 +42,7 @@ export default function AppearancePage() {
           
           <div className="space-y-2">
             {THEMES.map((theme) => {
-              // Safely access user theme with optional chaining
+              // Safely access user theme
               const isSelected = user?.chatTheme === theme.id;
               return (
                 <motion.button
