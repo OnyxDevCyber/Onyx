@@ -42,8 +42,9 @@ export default function AppearancePage() {
           
           <div className="space-y-2">
             {THEMES.map((theme) => {
-              // Safely access user theme
-              const isSelected = user?.chatTheme === theme.id;
+              // Safely access user theme with fallback
+              const currentTheme = user?.chatTheme || 'onyx';
+              const isSelected = currentTheme === theme.id;
               return (
                 <motion.button
                   key={theme.id}
