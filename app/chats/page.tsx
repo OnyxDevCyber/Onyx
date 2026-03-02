@@ -16,7 +16,10 @@ export default function ChatsPage() {
     // Load users from "DB"
     const allUsers = db.getUsers();
     // Filter out self
-    setUsers(allUsers.filter(u => u.id !== currentUser?.id));
+    // Wrap in setTimeout to avoid synchronous state update warning
+    setTimeout(() => {
+      setUsers(allUsers.filter(u => u.id !== currentUser?.id));
+    }, 0);
   }, [currentUser]);
 
   const filteredUsers = users.filter(user => 

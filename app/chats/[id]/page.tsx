@@ -26,13 +26,18 @@ export default function ChatPage() {
   const [messages, setMessages] = useState<{ id: number; text: string; isMe: boolean; time: string; status: 'sent' | 'read' }[]>([]);
   const [isTyping, setIsTyping] = useState(false);
   const [callType, setCallType] = useState<'audio' | 'video' | null>(null);
-  const [chatUser, setChatUser] = useState<User | null>(null);
+  // Initialize chatUser directly from DB to avoid useEffect state update warning
+  const [chatUser, setChatUser] = useState<User | null>(() => {
+    if (typeof window === 'undefined') return null; // Safety for SSR
+    const users = db.getUsers();
+    return users.find(u => u.id === (params.id as string)) || null;
+  });
   const scrollRef = useRef<HTMLDivElement>(null);
 
   const userId = params.id as string;
 
+  // We can keep this useEffect to update if userId changes, but it won't trigger on initial render now
   useEffect(() => {
-    // Load chat user from DB
     const users = db.getUsers();
     const found = users.find(u => u.id === userId);
     if (found) {

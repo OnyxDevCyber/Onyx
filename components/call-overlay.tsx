@@ -29,9 +29,12 @@ export function CallOverlay({ isOpen, type, user, onEnd }: CallOverlayProps) {
   // Initialize Peer and Media
   useEffect(() => {
     if (isOpen) {
-      setCallStatus('initializing');
-      setErrorMessage(null);
-      setDuration(0);
+      // Wrap in setTimeout to avoid synchronous state update warning
+      const timer = setTimeout(() => {
+        setCallStatus('initializing');
+        setErrorMessage(null);
+        setDuration(0);
+      }, 0);
 
       const initCall = async () => {
         try {

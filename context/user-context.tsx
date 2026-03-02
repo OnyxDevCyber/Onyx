@@ -25,14 +25,18 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     db.init(); // Ensure bot exists
     const savedId = localStorage.getItem('onyx_session_id');
-    if (savedId) {
-      const users = db.getUsers();
-      const found = users.find(u => u.id === savedId);
-      if (found) {
-        setUser(found);
+    
+    // Wrap in setTimeout to avoid synchronous state update warning
+    setTimeout(() => {
+      if (savedId) {
+        const users = db.getUsers();
+        const found = users.find(u => u.id === savedId);
+        if (found) {
+          setUser(found);
+        }
       }
-    }
-    setIsLoading(false);
+      setIsLoading(false);
+    }, 0);
   }, []);
 
   // Protect routes
