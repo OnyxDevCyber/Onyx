@@ -51,7 +51,16 @@ export const db = {
   init: () => {
     if (typeof window === 'undefined') return;
     const users = db.getUsers();
-    if (!users.some(u => u.isBot)) {
+    
+    // Cleanup old example users if they exist (migration)
+    const exampleNames = ['Alice', 'Bob', 'Charlie', 'David', 'Eve', 'Frank', 'Grace', 'Heidi', 'Ivan', 'Judy'];
+    const filteredUsers = users.filter(u => !exampleNames.includes(u.name) || u.username === 'onyx_bot');
+    
+    if (filteredUsers.length !== users.length) {
+       localStorage.setItem('onyx_users', JSON.stringify(filteredUsers));
+    }
+
+    if (!filteredUsers.some(u => u.isBot)) {
       const bot: User = {
         id: '99',
         name: 'Onyx Bot',
@@ -64,8 +73,8 @@ export const db = {
         isOnline: true,
         lastSeen: 'Always'
       };
-      users.push(bot);
-      localStorage.setItem('onyx_users', JSON.stringify(users));
+      filteredUsers.push(bot);
+      localStorage.setItem('onyx_users', JSON.stringify(filteredUsers));
     }
   }
 };

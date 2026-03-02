@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from 'motion/react';
 import { Phone, PhoneOff, Mic, MicOff, Video, VideoOff, UserCircle2, AlertTriangle } from 'lucide-react';
 import { clsx } from 'clsx';
 import { Peer } from 'peerjs';
+import { soundManager } from '@/lib/sounds';
 
 interface CallOverlayProps {
   isOpen: boolean;
@@ -25,6 +26,32 @@ export function CallOverlay({ isOpen, type, user, onEnd }: CallOverlayProps) {
   const peerRef = useRef<Peer | null>(null);
   const localStreamRef = useRef<MediaStream | null>(null);
   const callRef = useRef<any>(null);
+
+  // Handle sounds based on status
+  useEffect(() => {
+    if (!isOpen) {
+      soundManager.stop();
+      return;
+    }
+
+    if (callStatus === 'calling' || callStatus === 'initializing') {
+      soundManager.playRingback();
+    } else if (callStatus === 'connected') {
+      soundManager.stop();
+    } else if (callStatus === 'failed') {
+      soundManager.stop();
+      soundManager.playBusy();
+    } else if (callStatus === 'ended') {
+      soundManager.stop();
+      soundManager.playEndCall();
+    }
+
+    return () => {
+      // Don't stop here immediately if we want playEndCall to finish, 
+      // but usually unmount happens quickly. 
+      // soundManager.stop() is called on !isOpen above.
+    };
+  }, [isOpen, callStatus]);
 
   // Initialize Peer and Media
   useEffect(() => {
@@ -77,6 +104,8 @@ export function CallOverlay({ isOpen, type, user, onEnd }: CallOverlayProps) {
               // to show the UI working, or fails if we want to be strict.
               // Let's simulate a connection for the "experience".
               setTimeout(() => {
+                // Randomly fail sometimes to show busy state?
+                // Or just connect. User wants "real", so connecting is better.
                 setCallStatus('connected');
               }, 3000);
             }
@@ -114,6 +143,7 @@ export function CallOverlay({ isOpen, type, user, onEnd }: CallOverlayProps) {
         if (callRef.current) {
           callRef.current.close();
         }
+        clearTimeout(timer);
       };
     }
   }, [isOpen, type, user.isBot]);
@@ -145,6 +175,14 @@ export function CallOverlay({ isOpen, type, user, onEnd }: CallOverlayProps) {
     const mins = Math.floor(seconds / 60);
     const secs = seconds % 60;
     return `${mins}:${secs.toString().padStart(2, '0')}`;
+  };
+
+  const handleHangup = () => {
+    setCallStatus('ended');
+    // Allow sound to play briefly before closing
+    setTimeout(() => {
+      onEnd();
+    }, 500);
   };
 
   return (
@@ -286,7 +324,7 @@ export function CallOverlay({ isOpen, type, user, onEnd }: CallOverlayProps) {
               )}
 
               <button 
-                onClick={onEnd}
+                onClick={handleHangup}
                 className="p-4 rounded-full bg-red-500 text-white hover:bg-red-600 transition-colors shadow-lg shadow-red-500/20"
               >
                 <PhoneOff size={24} />

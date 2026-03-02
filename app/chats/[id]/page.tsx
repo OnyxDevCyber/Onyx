@@ -41,7 +41,10 @@ export default function ChatPage() {
     const users = db.getUsers();
     const found = users.find(u => u.id === userId);
     if (found) {
-      setChatUser(found);
+      // Wrap in setTimeout to avoid synchronous state update warning during render
+      setTimeout(() => {
+        setChatUser(found);
+      }, 0);
     }
   }, [userId]);
 
@@ -52,19 +55,7 @@ export default function ChatPage() {
     }
   }, [messages, isTyping]);
 
-  // Play sound when call starts
-  useEffect(() => {
-    if (callType) {
-      soundManager.playRingback();
-    } else {
-      soundManager.stop();
-    }
-    return () => soundManager.stop();
-  }, [callType]);
-
   const handleEndCall = () => {
-    soundManager.stop();
-    soundManager.playEndCall();
     setCallType(null);
   };
 
