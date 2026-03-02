@@ -14,6 +14,13 @@ export default function ProfilePage() {
   // Local state for the form
   const [formData, setFormData] = useState(user);
 
+  // Update formData when user changes (e.g. initial load)
+  if (user && !formData) {
+    setFormData(user);
+  }
+
+  if (!user || !formData) return null;
+
   const handleSave = () => {
     updateUser(formData);
     setIsEditing(false);

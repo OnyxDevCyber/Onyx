@@ -18,6 +18,8 @@ export default function AppearancePage() {
   const router = useRouter();
   const { user, updateUser } = useUser();
 
+  if (!user) return null;
+
   return (
     <div className="flex flex-col min-h-screen bg-black p-4 pb-24 max-w-md mx-auto w-full">
       {/* Header */}
