@@ -1,0 +1,8 @@
+{
+  "name": "Onyx",
+  "description": "A minimalist black and white chat messenger.",
+  "requestFramePermissions": [
+    "camera",
+    "microphone"
+  ]
+}
