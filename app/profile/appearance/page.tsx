@@ -18,9 +18,11 @@ export default function AppearancePage() {
   const router = useRouter();
   const { user, updateUser } = useUser();
 
+  // Explicit null check
   if (!user) return null;
 
-  const currentTheme = user?.chatTheme || 'onyx';
+  // Extract theme safely
+  const currentTheme = user.chatTheme || 'onyx';
 
   return (
     <div className="flex flex-col min-h-screen bg-black p-4 pb-24 max-w-md mx-auto w-full">
